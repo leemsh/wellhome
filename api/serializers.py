@@ -6,3 +6,4 @@ class ItemSerializer(serializers.ModelSerializer):
         model = Item
         fields = ("__all__")
         #fields = ('name', 'description' , 'cost')
+        #something to check
