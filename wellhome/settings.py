@@ -141,6 +141,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleWare',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 CORS_ALLOWED_ORIGINS = [
