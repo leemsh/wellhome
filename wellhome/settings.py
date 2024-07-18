@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'api',
     'rest_framework',
-    'corsheaders',
+    'corsheaders'
 ]
 
 #언어를 한국어로 변경해준다
@@ -142,11 +142,11 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleWare',
-    'django.middleware.common.CommonMiddleware',
+    'django.middleware.common.CommonMiddleware'
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:8080',
+    'http://localhost:8080'
 ]
 
 
