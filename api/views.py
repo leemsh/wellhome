@@ -12,7 +12,6 @@ class ItemViewSet(viewsets.ModelViewSet):
     serializer_class = ItemSerializer
     #permission_classes = [permissions.IsAuthenticated]
 
-
 def video_view(request, filename):
     file_path = os.path.join(settings.MEDIA_ROOT, filename)
     if not os.path.exists(file_path):
@@ -20,5 +19,4 @@ def video_view(request, filename):
 
     response = FileResponse(open(file_path, 'rb'), content_type='video/mp4')
     response['Accept-Ranges'] = 'bytes'
-    response.file_to_stream = open(file_path, 'rb')  # 파일 경로를 response 객체에 추가
     return response

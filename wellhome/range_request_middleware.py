@@ -1,5 +1,5 @@
 import re
-from django.http import FileResponse, HttpResponse, StreamingHttpResponse
+from django.http import HttpResponse
 from wsgiref.util import FileWrapper
 import os
 
@@ -11,16 +11,15 @@ class RangeFileWrapper(FileWrapper):
         self.length = length
 
     def __iter__(self):
-        with self.filelike:
-            self.filelike.seek(self.offset, os.SEEK_SET)
-            remaining = self.length
-            while remaining > 0:
-                read_length = min(self.blksize, remaining)
-                data = self.filelike.read(read_length)
-                if not data:
-                    break
-                remaining -= len(data)
-                yield data
+        self.filelike.seek(self.offset, os.SEEK_SET)
+        remaining = self.length
+        while remaining > 0:
+            read_length = min(self.blksize, remaining)
+            data = self.filelike.read(read_length)
+            if not data:
+                break
+            remaining -= len(data)
+            yield data
 
 class RangeRequestMiddleware:
     def __init__(self, get_response):
@@ -28,7 +27,7 @@ class RangeRequestMiddleware:
 
     def __call__(self, request):
         response = self.get_response(request)
-        if 'HTTP_RANGE' in request.META:
+        if 'HTTP_RANGE' in request.META and isinstance(response, FileResponse):
             response = self.process_range_request(request, response)
         return response
 
@@ -40,13 +39,13 @@ class RangeRequestMiddleware:
             first_byte = int(first_byte)
             last_byte = int(last_byte) if last_byte else None
 
-            file_size = os.path.getsize(response.file_to_stream.path)
+            file_size = os.path.getsize(response.streaming_content.name)
             if last_byte is None or last_byte >= file_size:
                 last_byte = file_size - 1
             length = last_byte - first_byte + 1
 
             response = HttpResponse(
-                RangeFileWrapper(response.file_to_stream.file, offset=first_byte, length=length),
+                RangeFileWrapper(open(response.streaming_content.name, 'rb'), offset=first_byte, length=length),
                 status=206,
                 content_type=response['Content-Type']
             )
