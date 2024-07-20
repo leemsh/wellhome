@@ -57,7 +57,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    #'wellhome.range_request_middleware.RangeRequestMiddleware',  # 생성한 미들웨어 경로 추가
+    'wellhome.range_request_middleware.RangeRequestMiddleware',  # 생성한 미들웨어 경로 추가
 ]
 
 ROOT_URLCONF = 'wellhome.urls'
