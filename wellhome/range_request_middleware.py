@@ -1,8 +1,8 @@
 import re
 import os
-from django.http import HttpResponse
-from django.http import FileResponse  # 추가: FileResponse를 가져옵니다.
+from django.http import HttpResponse, FileResponse
 from wsgiref.util import FileWrapper
+
 
 class RangeFileWrapper(FileWrapper):
     def __init__(self, filelike, blksize=8192, offset=0, length=None):
@@ -22,6 +22,7 @@ class RangeFileWrapper(FileWrapper):
             remaining -= len(data)
             yield data
 
+
 class RangeRequestMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
@@ -40,16 +41,19 @@ class RangeRequestMiddleware:
             first_byte = int(first_byte)
             last_byte = int(last_byte) if last_byte else None
 
-            file_size = os.path.getsize(response.streaming_content.name)
+            # Fetch file path directly from the response object
+            file_path = response.file_to_stream.name
+            file_size = os.path.getsize(file_path)
+
             if last_byte is None or last_byte >= file_size:
                 last_byte = file_size - 1
             length = last_byte - first_byte + 1
 
             response = HttpResponse(
-                RangeFileWrapper(open(response.streaming_content.name, 'rb'), offset=first_byte, length=length),
+                RangeFileWrapper(open(file_path, 'rb'), offset=first_byte, length=length),
                 status=206,
                 content_type=response['Content-Type']
             )
             response['Content-Length'] = str(length)
-            response['Content-Range'] = 'bytes %s-%s/%s' % (first_byte, last_byte, file_size)
+            response['Content-Range'] = f'bytes {first_byte}-{last_byte}/{file_size}'
         return response
