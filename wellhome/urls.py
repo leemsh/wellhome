@@ -17,11 +17,13 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
+from api.views import video_view
 from wellhome import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('api.urls')),
+    path('video/<str:filename>/', video_view, name='video_view'),
 ]
 
 if settings.DEBUG:
