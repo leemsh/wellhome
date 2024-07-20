@@ -23,7 +23,7 @@ from wellhome import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('api.urls')),
-    path('videos/<str:filename>/', video_view, name='video_view'),
+    path('media/videos/<str:filename>/', video_view, name='video_view'),
 ]
 
 if settings.DEBUG:

@@ -1,7 +1,8 @@
 import re
-from django.http import HttpResponse
-from wsgiref.util import FileWrapper
 import os
+from django.http import HttpResponse
+from django.http import FileResponse  # 추가: FileResponse를 가져옵니다.
+from wsgiref.util import FileWrapper
 
 class RangeFileWrapper(FileWrapper):
     def __init__(self, filelike, blksize=8192, offset=0, length=None):
