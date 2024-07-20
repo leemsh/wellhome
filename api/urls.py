@@ -1,7 +1,6 @@
 from django.urls import include, path
 from rest_framework import routers
 from . import views
-from . import video_view
 
 router = routers.DefaultRouter()
 router.register('Item', views.ItemViewSet)
